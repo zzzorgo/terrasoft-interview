@@ -31,15 +31,26 @@ namespace InterviewTask
          */
         static char[] GetMaxRatesChars(string inputString)
         {
-            const int outputChatLimit = 3;
             char[] alphabet = InitAlphabet();
             Dictionary<char, int> counter = InitCounter(alphabet);
 
-            foreach (char c in inputString)
+            int stringLength = inputString.Length;
+            for (int i = 0; i < stringLength; i++)
             {
+                char c = inputString[i];
                 if (alphabet.Contains(c))
                 {
                     counter[c]++;
+
+                    int minRateFromTop3 = GetTop3CharItems(counter)
+                        .Min(charItem => charItem.Value);
+
+                    bool done = minRateFromTop3 >= stringLength - i;
+
+                    if (done)
+                    {
+                        break;
+                    }
                 }
                 else
                 {
@@ -47,15 +58,21 @@ namespace InterviewTask
                 }
             }
 
-            char[] maxRates = counter
-                .Select(c => c)
-                .OrderByDescending(c => c.Value)
-                .Where(c => c.Value > 0)
-                .Take(outputChatLimit)
+            char[] maxRates = GetTop3CharItems(counter)
                 .Select(c => c.Key)
                 .ToArray();
 
             return maxRates;
+        }
+
+        static IEnumerable<KeyValuePair<char, int>> GetTop3CharItems(Dictionary<char, int> counter)
+        {
+            const int outputChatLimit = 3;
+            return counter
+                        .Select(charItem => charItem)
+                        .OrderByDescending(charItem => charItem.Value)
+                        .Where(charItem => charItem.Value > 0)
+                        .Take(outputChatLimit);
         }
 
         static char[] InitAlphabet()
