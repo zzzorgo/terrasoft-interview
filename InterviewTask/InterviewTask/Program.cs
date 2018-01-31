@@ -12,7 +12,6 @@ using System.Threading.Tasks;
  * 3) Разделители бывают двух видов " " и ", "
  * 4) Алфавит строк состоит из трех символов: a, b, c
  * 5) Символы всегда остортированы внутри входной строки
- * 6) Отсортированный блок из одинаковых символов не может быть больше трех (пример недопустимого ввода: "aaaa")
  */
 
 namespace InterviewTask
@@ -21,14 +20,26 @@ namespace InterviewTask
     {
         static void Main(string[] args)
         {
+            string inputString = Console.ReadLine();
+
+            Dictionary<char, int> counter = GetMaxRateChars(inputString);
+
+            PrintCounter(counter);
+            Console.ReadLine();
+        }
+
+        /**
+         * Целевой метод
+         */
+        static Dictionary<char, int> GetMaxRateChars(string inputString)
+        {
             char[] alphabet = { 'a', 'b', 'c' };
             Dictionary<char, int> counter = InitCounter(alphabet);
 
-            string inputString = Console.ReadLine();
-
             foreach (char c in inputString)
             {
-                if (alphabet.Contains(c)) {
+                if (alphabet.Contains(c))
+                {
                     counter[c]++;
                 }
                 else
@@ -36,8 +47,8 @@ namespace InterviewTask
                     continue;
                 }
             }
-            PrintCounter(counter);
-            Console.ReadLine();
+
+            return counter;
         }
 
         static Dictionary<char, int> InitCounter(char[] alphabet)
