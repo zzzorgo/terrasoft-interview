@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 /**
  * Так как текст задания не исчерпывающий, то код программы будет основан на следующих допущениях
  * 
- * 1) Дефис в начале примеров ввода не является частью строки
- * 2) Пробелы и запятые не являются целевыми символами, а лишь разделителями
- * 3) Разделители бывают двух видов " " и ", "
- * 4) Алфавит строк состоит из трех символов: a, b, c
- * 5) Символы всегда остортированы внутри входной строки
+ * 1) Примеры являются примерами выходной коллекции, а не входной строки
+ * 2) Алфавит строк состоит из всех строчных букв латинского алфавита
+ * 3) Вывод отсортирован в порядке веса символа
  */
 
 namespace InterviewTask
@@ -22,18 +20,19 @@ namespace InterviewTask
         {
             string inputString = Console.ReadLine();
 
-            Dictionary<char, int> counter = GetMaxRateChars(inputString);
+            char[] maxRates = GetMaxRatesChars(inputString);
 
-            PrintCounter(counter);
+            PrintMaxRates(maxRates);
             Console.ReadLine();
         }
 
         /**
          * Целевой метод
          */
-        static Dictionary<char, int> GetMaxRateChars(string inputString)
+        static char[] GetMaxRatesChars(string inputString)
         {
-            char[] alphabet = { 'a', 'b', 'c' };
+            const int outputChatLimit = 3;
+            char[] alphabet = InitAlphabet();
             Dictionary<char, int> counter = InitCounter(alphabet);
 
             foreach (char c in inputString)
@@ -48,7 +47,29 @@ namespace InterviewTask
                 }
             }
 
-            return counter;
+            char[] maxRates = counter
+                .Select(c => c)
+                .OrderByDescending(c => c.Value)
+                .Where(c => c.Value > 0)
+                .Take(outputChatLimit)
+                .Select(c => c.Key)
+                .ToArray();
+
+            return maxRates;
+        }
+
+        static char[] InitAlphabet()
+        {
+            const char start = 'a';
+            const char end = 'z';
+            char[] alphabet = new char[end - start + 1];
+
+            for (char c = start; c <= end; c++)
+            {
+                alphabet[c - start] = c;
+            }
+
+            return alphabet;
         }
 
         static Dictionary<char, int> InitCounter(char[] alphabet)
@@ -64,11 +85,11 @@ namespace InterviewTask
             return counter;
         }
 
-        static void PrintCounter(Dictionary<char, int> counter)
+        static void PrintMaxRates(char[] maxRates)
         {
-            foreach (var charItem in counter)
+            foreach (char c in maxRates)
             {
-                Console.WriteLine("{0}: {1}", charItem.Key, charItem.Value);
+                Console.Write("{0} ", c);
             }
         }
     }
